@@ -8,10 +8,12 @@ import { TagsBlock } from "../components/TagsBlock";
 import { CommentsBlock } from "../components/CommentsBlock";
 
 import { useDispatch, useSelector } from "react-redux";
-import { fetchPosts, fetchTags } from "../redux/slices/posts";
+import { fetchPosts, fetchTags } from "../redux/slices/postsSlice";
 
 export const Home = () => {
   const dispatch = useDispatch();
+  const userData = useSelector((state) => state.user.data);
+
   const { posts, tags } = useSelector((state) => state.posts);
 
   const isPostsLoading = posts.status === "loading";
@@ -31,12 +33,13 @@ export const Home = () => {
         <Grid xs={8} item>
           {(isPostsLoading ? [...Array(5)] : posts.items).map((obj, index) =>
             isPostsLoading ? (
-              <Post id={index} isLoading={true} />
+              <Post id={index} isLoading={true} key={index} />
             ) : (
               <Post
+                key={obj._id}
                 id={obj._id}
                 title={obj.title}
-                imageUrl={obj.imageUrl}
+                imageUrl={obj.imageUrl ? "http://localhost:4444" + obj.imageUrl : ""}
                 user={{
                   avatarUrl: obj.user.avatarUrl,
                   fullName: obj.user.fullName,
@@ -45,7 +48,7 @@ export const Home = () => {
                 viewsCount={obj.viewsCount}
                 commentsCount={3}
                 tags={obj.tags}
-                isEditable
+                isEditable={userData?._id === obj.user._id}
               />
             ),
           )}

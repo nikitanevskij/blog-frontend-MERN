@@ -5,7 +5,7 @@ import { Index } from "../components/AddComment";
 import { CommentsBlock } from "../components/CommentsBlock";
 import { useParams } from "react-router-dom";
 
-import { fetchOnePost } from "../redux/slices/posts";
+import { fetchOnePost } from "../redux/slices/postsSlice";
 import { useDispatch, useSelector } from "react-redux";
 import ReactMarkdown from "react-markdown";
 
@@ -27,7 +27,7 @@ export const FullPost = () => {
       <Post
         id={post.item._id}
         title={post.item.title}
-        imageUrl={post.item.imageUrl}
+        imageUrl={post.item.imageUrl ? "http://localhost:4444" + post.item.imageUrl : ""}
         user={post.item.user}
         createdAt={post.item.createdAt}
         viewsCount={post.item.viewsCount}
@@ -35,9 +35,7 @@ export const FullPost = () => {
         tags={post.item.tags}
         isFullPost
       >
-        <p>
-          <ReactMarkdown children={post.item.text} />
-        </p>
+        <ReactMarkdown children={post.item.text} />
       </Post>
       <CommentsBlock
         items={[

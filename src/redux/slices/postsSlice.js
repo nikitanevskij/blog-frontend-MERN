@@ -15,6 +15,11 @@ export const fetchOnePost = createAsyncThunk("posts/fetchOnePost", async (id) =>
   return data;
 });
 
+export const fetchRemovePost = createAsyncThunk("posts/fetchRemovePost", async (id) => {
+  const { data } = await axios.delete(`/posts/${id}`);
+  return data;
+});
+
 const initialState = {
   posts: {
     items: [],
@@ -73,6 +78,11 @@ const postsSlice = createSlice({
     builder.addCase(fetchOnePost.rejected, (state) => {
       state.post.item = {};
       state.post.status = "loading";
+    });
+    //DELETE POST
+    builder.addCase(fetchRemovePost.pending, (state, action) => {
+      //@ts-ignore
+      state.posts.items = state.posts.items.filter((obj) => obj._id !== action.meta.arg);
     });
   },
 });
