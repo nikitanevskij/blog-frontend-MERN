@@ -10,6 +10,12 @@ export const fetchTags = createAsyncThunk("posts/fetchTags", async () => {
   return data;
 });
 
+export const fetchFilterbyTags = createAsyncThunk("posts/tags", async (tag) => {
+  console.log(tag);
+  const { data } = await axios.post("/posts/tags", { filterTag: tag });
+  return data;
+});
+
 export const fetchOnePost = createAsyncThunk("posts/fetchOnePost", async (id) => {
   const { data } = await axios.get(`/posts/${id}`);
   return data;
@@ -83,6 +89,19 @@ const postsSlice = createSlice({
     builder.addCase(fetchRemovePost.pending, (state, action) => {
       //@ts-ignore
       state.posts.items = state.posts.items.filter((obj) => obj._id !== action.meta.arg);
+    });
+    //ONE POST
+    builder.addCase(fetchFilterbyTags.pending, (state) => {
+      state.posts.items = {};
+      state.posts.status = "loading";
+    });
+    builder.addCase(fetchFilterbyTags.fulfilled, (state, action) => {
+      state.posts.items = action.payload;
+      state.posts.status = "loaded";
+    });
+    builder.addCase(fetchFilterbyTags.rejected, (state) => {
+      state.posts.items = {};
+      state.posts.status = "loading";
     });
   },
 });

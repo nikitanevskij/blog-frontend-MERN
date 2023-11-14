@@ -18,7 +18,7 @@ export const FullPost = () => {
   React.useEffect(() => {
     dispatch(fetchOnePost(id));
   }, []);
-
+  console.log(post.item.tags);
   if (isLoadedPost) {
     return <Post isLoading={isLoadedPost} isFullPost />;
   }

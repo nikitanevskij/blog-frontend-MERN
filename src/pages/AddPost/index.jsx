@@ -20,7 +20,7 @@ export const AddPost = () => {
   const [imageUrl, setImageUrl] = React.useState("");
   const [title, setTitle] = React.useState("");
   const [text, setText] = React.useState("");
-  const [tags, setTags] = React.useState([]);
+  const [tags, setTags] = React.useState("");
 
   React.useEffect(() => {
     if (id) {
@@ -73,13 +73,13 @@ export const AddPost = () => {
   const onSubmit = async () => {
     try {
       setIsLoading(true);
+
       const newPost = {
         title,
         text,
         tags: tags,
         imageUrl,
       };
-      console.log(newPost);
 
       const { data } = id
         ? await axios.patch(`/posts/${id}`, newPost)
