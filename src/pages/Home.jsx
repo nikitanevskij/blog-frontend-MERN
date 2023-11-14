@@ -13,19 +13,34 @@ import { fetchPosts, fetchTags } from "../redux/slices/postsSlice";
 export const Home = () => {
   const dispatch = useDispatch();
   const userData = useSelector((state) => state.user.data);
-
+  const [sortValue, setSortValue] = React.useState(0);
   const { posts, tags } = useSelector((state) => state.posts);
 
   const isPostsLoading = posts.status === "loading";
   const isTagsLoading = tags.status === "loading";
+
   React.useEffect(() => {
     dispatch(fetchPosts());
     dispatch(fetchTags());
   }, []);
 
+  const handleChange = (event, newValue) => {
+    setSortValue(newValue);
+    if (newValue === 0) {
+      dispatch(fetchPosts());
+      return;
+    }
+    dispatch(fetchPosts("sort_count"));
+  };
+
   return (
     <>
-      <Tabs style={{ marginBottom: 15 }} value={0} aria-label="basic tabs example">
+      <Tabs
+        style={{ marginBottom: 15 }}
+        value={sortValue}
+        onChange={handleChange}
+        aria-label="basic tabs example"
+      >
         <Tab label="Новые" />
         <Tab label="Популярные" />
       </Tabs>
@@ -41,14 +56,14 @@ export const Home = () => {
                 title={obj.title}
                 imageUrl={obj.imageUrl ? "http://localhost:4444" + obj.imageUrl : ""}
                 user={{
-                  avatarUrl: obj.user.avatarUrl,
-                  fullName: obj.user.fullName,
+                  avatarUrl: obj?.user?.avatarUrl,
+                  fullName: obj?.user?.fullName,
                 }}
                 createdAt={obj.createdAt}
                 viewsCount={obj.viewsCount}
                 commentsCount={3}
                 tags={obj.tags}
-                isEditable={userData?._id === obj.user._id}
+                isEditable={userData?._id === obj?.user?._id}
               />
             ),
           )}

@@ -79,10 +79,11 @@ export const AddPost = () => {
         tags: tags,
         imageUrl,
       };
+      console.log(newPost);
 
       const { data } = id
         ? await axios.patch(`/posts/${id}`, newPost)
-        : await axios.post("/posts", newPost);
+        : await axios.post("/post", newPost);
 
       const _id = id ? id : data._id;
 
