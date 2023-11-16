@@ -8,17 +8,21 @@ import { useParams } from "react-router-dom";
 import { fetchOnePost } from "../redux/slices/postsSlice";
 import { useDispatch, useSelector } from "react-redux";
 import ReactMarkdown from "react-markdown";
+import { fetchComments, fetchCommentsById } from "../redux/slices/commentsSlice";
 
 export const FullPost = () => {
   const dispatch = useDispatch();
-  const { post } = useSelector((state) => state.posts);
-  const isLoadedPost = post.status === "loading";
   const { id } = useParams();
+  const { post } = useSelector((state) => state.posts);
+  const { comments } = useSelector((state) => state.comments);
+  const isLoadedPost = post.status === "loading";
+  const isCommentsLoading = comments.status === "loading";
 
   React.useEffect(() => {
     dispatch(fetchOnePost(id));
+    dispatch(fetchCommentsById(id));
   }, []);
-  console.log(post.item.tags);
+
   if (isLoadedPost) {
     return <Post isLoading={isLoadedPost} isFullPost />;
   }
@@ -37,25 +41,7 @@ export const FullPost = () => {
       >
         <ReactMarkdown children={post.item.text} />
       </Post>
-      <CommentsBlock
-        items={[
-          {
-            user: {
-              fullName: "Вася Пупкин",
-              avatarUrl: "https://mui.com/static/images/avatar/1.jpg",
-            },
-            text: "Это тестовый комментарий 555555",
-          },
-          {
-            user: {
-              fullName: "Иван Иванов",
-              avatarUrl: "https://mui.com/static/images/avatar/2.jpg",
-            },
-            text: "When displaying three lines or more, the avatar is not aligned at the top. You should set the prop to align the avatar at the top",
-          },
-        ]}
-        isLoading={false}
-      >
+      <CommentsBlock items={comments.items} isLoading={isCommentsLoading}>
         <Index />
       </CommentsBlock>
     </>
