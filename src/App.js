@@ -4,10 +4,10 @@ import { Routes, Route } from "react-router-dom";
 import { Header } from "./components";
 import { Home, FullPost, Registration, AddPost, Login, FilterTags } from "./pages";
 import { fetchAuthMe } from "./redux/slices/authSlice";
-import { useDispatch } from "react-redux";
+import { useAppDispatch } from "./redux/store";
 
 function App() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   React.useEffect(() => {
     dispatch(fetchAuthMe());
   }, []);

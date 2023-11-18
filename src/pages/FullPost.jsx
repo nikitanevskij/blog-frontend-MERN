@@ -6,12 +6,13 @@ import { CommentsBlock } from "../components/CommentsBlock";
 import { useParams } from "react-router-dom";
 
 import { fetchOnePost } from "../redux/slices/postsSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import ReactMarkdown from "react-markdown";
-import { fetchComments, fetchCommentsById } from "../redux/slices/commentsSlice";
+import { fetchCommentsById } from "../redux/slices/commentsSlice";
+import { useAppDispatch } from "../redux/store";
 
 export const FullPost = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { id } = useParams();
   const { post } = useSelector((state) => state.posts);
   const { comments } = useSelector((state) => state.comments);
@@ -42,7 +43,7 @@ export const FullPost = () => {
         <ReactMarkdown children={post.item.text} />
       </Post>
       <CommentsBlock items={comments.items} isLoading={isCommentsLoading}>
-        <Index />
+        <Index post={post.item._id} />
       </CommentsBlock>
     </>
   );

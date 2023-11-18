@@ -3,11 +3,12 @@ import Button from "@mui/material/Button";
 import { Link } from "react-router-dom";
 import styles from "./Header.module.scss";
 import Container from "@mui/material/Container";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { isAuthSelect, logout } from "../../redux/slices/authSlice";
+import { useAppDispatch } from "../../redux/store";
 
 export const Header = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const isAuth = useSelector(isAuthSelect);
 
   const onClickLogout = () => {

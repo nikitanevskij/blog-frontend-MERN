@@ -7,12 +7,13 @@ import { Post } from "../components/Post";
 import { TagsBlock } from "../components/TagsBlock";
 import { CommentsBlock } from "../components/CommentsBlock";
 
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { fetchPosts, fetchTags } from "../redux/slices/postsSlice";
 import { fetchComments } from "../redux/slices/commentsSlice";
+import { useAppDispatch } from "../redux/store";
 
 export const Home = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const userData = useSelector((state) => state.user.data);
   const { comments } = useSelector((state) => state.comments);
   const [sortValue, setSortValue] = React.useState(0);

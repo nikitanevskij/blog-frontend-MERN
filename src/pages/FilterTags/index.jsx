@@ -1,13 +1,13 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import Grid from "@mui/material/Grid";
-import styles from "./FilterTags.module.scss";
 import { Post } from "../../components";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { fetchFilterbyTags } from "../../redux/slices/postsSlice";
+import { useAppDispatch } from "../../redux/store";
 
 export const FilterTags = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { posts } = useSelector((state) => state.posts);
   const isPostsLoading = posts.status === "loading";
   const { tag } = useParams();
@@ -15,15 +15,17 @@ export const FilterTags = () => {
   React.useEffect(() => {
     dispatch(fetchFilterbyTags(tag));
   }, []);
+
   return (
     <>
       <h2>Поиск по тегу: #{tag} </h2>
-      <Grid container spacing={6}>
-        <Grid xs={6} item>
-          {(isPostsLoading ? [...Array(5)] : posts.items).map((obj, index) =>
-            isPostsLoading ? (
-              <Post id={index} isLoading={true} key={index} />
-            ) : (
+
+      <Grid container spacing={2}>
+        {(isPostsLoading ? [...Array(5)] : posts.items).map((obj, index) =>
+          isPostsLoading ? (
+            <Post id={index} isLoading={true} key={index} />
+          ) : (
+            <Grid xs={6} item>
               <Post
                 key={obj._id}
                 id={obj._id}
@@ -39,9 +41,9 @@ export const FilterTags = () => {
                 tags={obj.tags}
                 // isEditable={userData?._id === obj?.user?._id}
               />
-            ),
-          )}
-        </Grid>
+            </Grid>
+          ),
+        )}
       </Grid>
     </>
   );
