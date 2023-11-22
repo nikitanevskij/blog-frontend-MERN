@@ -40,10 +40,10 @@ export const CommentsBlock = ({ items, children, isLoading = true }) => {
               ) : (
                 <ListItemText primary={obj.user.fullName} secondary={obj.text} />
               )}
-              {/* {console.log(obj.user._id === userData._id)} */}
-              {!!children ? (
+
+              {children && obj?.user?._id === userData?._id ? (
                 <Button
-                  className={{ marginTop: 10 }}
+                  sx={{ marginTop: "10px" }}
                   color="error"
                   onClick={() => deleteById(obj._id)}
                 >
