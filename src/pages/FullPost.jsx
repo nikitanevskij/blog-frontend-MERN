@@ -10,18 +10,20 @@ import { useSelector } from "react-redux";
 import ReactMarkdown from "react-markdown";
 import { fetchCommentsById } from "../redux/slices/commentsSlice";
 import { useAppDispatch } from "../redux/store";
+import { useGetCommentsByIdQuery, useGetCommentsQuery } from "../redux/commentsApi";
 
 export const FullPost = () => {
   const dispatch = useAppDispatch();
   const { id } = useParams();
   const { post } = useSelector((state) => state.posts);
-  const { comments } = useSelector((state) => state.comments);
+  const { data = [], isLoading } = useGetCommentsByIdQuery(id);
+  // const { comments } = useSelector((state) => state.comments);
   const isLoadedPost = post.status === "loading";
-  const isCommentsLoading = comments.status === "loading";
+  // const isCommentsLoading = comments.status === "loading";
 
   React.useEffect(() => {
     dispatch(fetchOnePost(id));
-    dispatch(fetchCommentsById(id));
+    // dispatch(fetchCommentsById(id));
   }, []);
 
   if (isLoadedPost) {
@@ -42,7 +44,7 @@ export const FullPost = () => {
       >
         <ReactMarkdown children={post.item.text} />
       </Post>
-      <CommentsBlock items={comments.items} isLoading={isCommentsLoading}>
+      <CommentsBlock items={data} isLoading={isLoading}>
         <Index post={post.item._id} />
       </CommentsBlock>
     </>

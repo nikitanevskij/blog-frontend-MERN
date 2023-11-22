@@ -7,19 +7,24 @@ import axios from "../../axios";
 
 import { fetchCommentsById } from "../../redux/slices/commentsSlice";
 import { useAppDispatch } from "../../redux/store";
+import { useAddCommentMutation } from "../../redux/commentsApi";
 
 export const Index = ({ post }) => {
   const [text, setText] = React.useState("");
-  const dispatch = useAppDispatch();
+  const [addComment] = useAddCommentMutation();
+  // const dispatch = useAppDispatch();
 
   const onSubmit = async () => {
     try {
-      const comment = {
-        text,
-        post,
-      };
-      await axios.post("/comments", comment);
-      dispatch(fetchCommentsById(post));
+      if (text) {
+        const comment = {
+          text,
+          post,
+        };
+        await addComment(comment);
+      }
+
+      // dispatch(fetchCommentsById(post));
       setText("");
     } catch (err) {
       console.warn(err);

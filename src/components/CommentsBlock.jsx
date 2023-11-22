@@ -8,8 +8,17 @@ import ListItemText from "@mui/material/ListItemText";
 import Divider from "@mui/material/Divider";
 import List from "@mui/material/List";
 import Skeleton from "@mui/material/Skeleton";
+import Button from "@mui/material/Button";
+import { useDeleteCommentMutation } from "../redux/commentsApi";
+import { useSelector } from "react-redux";
 
 export const CommentsBlock = ({ items, children, isLoading = true }) => {
+  const [deleteComment] = useDeleteCommentMutation();
+  const userData = useSelector((state) => state.user.data);
+  console.log(userData?._id);
+  const deleteById = async (id) => {
+    deleteComment(id);
+  };
   return (
     <SideBlock title="Комментарии">
       <List>
@@ -29,12 +38,22 @@ export const CommentsBlock = ({ items, children, isLoading = true }) => {
                   <Skeleton variant="text" height={18} width={230} />
                 </div>
               ) : (
-                <ListItemText
-                  primary={obj.user.fullName}
-                  secondary={obj.text}
-                />
+                <ListItemText primary={obj.user.fullName} secondary={obj.text} />
+              )}
+              {/* {console.log(obj.user._id === userData._id)} */}
+              {!!children ? (
+                <Button
+                  className={{ marginTop: 10 }}
+                  color="error"
+                  onClick={() => deleteById(obj._id)}
+                >
+                  Удалить
+                </Button>
+              ) : (
+                ""
               )}
             </ListItem>
+
             <Divider variant="inset" component="li" />
           </React.Fragment>
         ))}

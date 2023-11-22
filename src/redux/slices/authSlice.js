@@ -87,6 +87,7 @@ export const fetchAuthSlice = createSlice({
 });
 
 export const isAuthSelect = (state) => Boolean(state.user.data);
+
 export const { logout } = fetchAuthSlice.actions;
 
 export default fetchAuthSlice.reducer;
