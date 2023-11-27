@@ -47,7 +47,7 @@ export const FullPost = () => {
         <ReactMarkdown children={post.item.text} />
       </Post>
       <CommentsBlock items={data} isLoading={isLoading}>
-        {userAuth && <Index post={post.item._id} />}
+        {userAuth && <Index postId={post.item._id} />}
       </CommentsBlock>
     </>
   );

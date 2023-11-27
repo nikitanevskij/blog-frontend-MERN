@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 import { isAuthSelect, logout } from "../../redux/slices/authSlice";
 import { useAppDispatch } from "../../redux/store";
 
-export const Header = () => {
+export const Header: React.FC = () => {
   const dispatch = useAppDispatch();
   const isAuth = useSelector(isAuthSelect);
 

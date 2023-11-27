@@ -3,13 +3,16 @@ import styles from "./AddComment.module.scss";
 import TextField from "@mui/material/TextField";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
-import axios from "../../axios";
-
-import { fetchCommentsById } from "../../redux/slices/commentsSlice";
-import { useAppDispatch } from "../../redux/store";
+// import axios from "../../axios";
+// import { fetchCommentsById } from "../../redux/slices/commentsSlice";
+// import { useAppDispatch } from "../../redux/store";
 import { useAddCommentMutation } from "../../redux/commentsApi";
 
-export const Index = ({ post }) => {
+type TIndexProps = {
+  postId: string;
+};
+
+export const Index: React.FC<TIndexProps> = ({ postId }) => {
   const [text, setText] = React.useState("");
   const [addComment] = useAddCommentMutation();
   // const dispatch = useAppDispatch();
@@ -19,11 +22,10 @@ export const Index = ({ post }) => {
       if (text) {
         const comment = {
           text,
-          post,
+          postId,
         };
         await addComment(comment);
       }
-
       // dispatch(fetchCommentsById(post));
       setText("");
     } catch (err) {

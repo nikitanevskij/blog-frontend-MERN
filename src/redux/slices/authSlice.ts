@@ -1,33 +1,78 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "../../axios";
+import { AxiosError } from "axios";
+import { RootState } from "../store";
 
-const initialState = {
+interface KnownError {
+  errorMessage: string;
+}
+export type TRegisterPayload = {
+  fullName: string;
+  email: string;
+  password: string;
+  avatarUrl?: string;
+};
+
+export type TAuthPayload = {
+  email: string;
+  password: string;
+};
+
+export type TFetchUser = {
+  fullName: string;
+  email: string;
+  avatarUrl: string;
+  _id: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+  token: string;
+};
+
+interface IAuthSliceState {
+  data: null | TFetchUser;
+  status: "loading" | "loaded";
+}
+
+const initialState: IAuthSliceState = {
   data: null,
   status: "loading",
 };
 
-export const fetchAuth = createAsyncThunk("auth/fetchAuth", async (obj, { rejectWithValue }) => {
-  try {
-    const { data } = await axios.post("/auth/login", obj);
-    console.log(data);
-    return data;
-  } catch (err) {
-    return rejectWithValue(err.response.data);
-  }
-});
-
-export const fetchRegister = createAsyncThunk(
-  "auth/fetchRegister",
+export const fetchAuth = createAsyncThunk<TFetchUser, TAuthPayload, { rejectValue: KnownError }>(
+  "auth/fetchAuth",
   async (obj, { rejectWithValue }) => {
     try {
-      const { data } = await axios.post("/auth/register", obj);
+      const { data } = await axios.post("/auth/login", obj);
       console.log(data);
       return data;
     } catch (err) {
-      return rejectWithValue(err.response.data);
+      const error = err as AxiosError<KnownError>;
+      if (!error.response) {
+        throw err;
+      }
+      return rejectWithValue(error.response.data);
     }
   },
 );
+
+export const fetchRegister = createAsyncThunk<
+  TFetchUser,
+  TRegisterPayload,
+  { rejectValue: KnownError }
+>("auth/fetchRegister", async (obj, { rejectWithValue }) => {
+  try {
+    const { data } = await axios.post("/auth/register", obj);
+    console.log(data);
+    return data;
+  } catch (err) {
+    const error = err as AxiosError<KnownError>;
+    if (!error.response) {
+      throw err;
+    }
+    return rejectWithValue(error.response.data);
+  }
+});
 
 export const fetchAuthMe = createAsyncThunk("auth/fetchAuthMe", async () => {
   const { data } = await axios.get("/auth/me");
@@ -86,7 +131,7 @@ export const fetchAuthSlice = createSlice({
   },
 });
 
-export const isAuthSelect = (state) => Boolean(state.user.data);
+export const isAuthSelect = (state: RootState) => Boolean(state.user.data);
 
 export const { logout } = fetchAuthSlice.actions;
 

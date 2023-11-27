@@ -15,7 +15,6 @@ export const AddPost = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const isAuth = useSelector(isAuthSelect);
-  const [isLoading, setIsLoading] = React.useState(false);
   const inputFileRef = React.useRef(null);
   const [imageUrl, setImageUrl] = React.useState("");
   const [title, setTitle] = React.useState("");
@@ -72,8 +71,6 @@ export const AddPost = () => {
 
   const onSubmit = async () => {
     try {
-      setIsLoading(true);
-
       const newPost = {
         title,
         text,
