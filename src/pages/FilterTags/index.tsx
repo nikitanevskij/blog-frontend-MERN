@@ -4,16 +4,18 @@ import Grid from "@mui/material/Grid";
 import { Post } from "../../components";
 import { useSelector } from "react-redux";
 import { fetchFilterbyTags } from "../../redux/slices/postsSlice";
-import { useAppDispatch } from "../../redux/store";
+import { RootState, useAppDispatch } from "../../redux/store";
 
-export const FilterTags = () => {
+export const FilterTags: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { posts } = useSelector((state) => state.posts);
+  const { posts } = useSelector((state: RootState) => state.posts);
   const isPostsLoading = posts.status === "loading";
-  const { tag } = useParams();
+  const { tag } = useParams<{ tag: string }>();
 
   React.useEffect(() => {
-    dispatch(fetchFilterbyTags(tag));
+    if (tag) {
+      dispatch(fetchFilterbyTags(tag));
+    }
   }, []);
 
   return (
@@ -25,7 +27,7 @@ export const FilterTags = () => {
           isPostsLoading ? (
             <Post id={index} isLoading={true} key={index} />
           ) : (
-            <Grid xs={6} item>
+            <Grid xs={6} item key={obj._id}>
               <Post
                 key={obj._id}
                 id={obj._id}

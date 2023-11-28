@@ -2,9 +2,9 @@ import React from "react";
 import styles from "./UserInfo.module.scss";
 
 type TUserInfoProps = {
-  avatarUrl: string;
-  fullName: string;
-  additionalText: string;
+  avatarUrl?: string;
+  fullName?: string;
+  additionalText?: string;
 };
 
 export const UserInfo: React.FC<TUserInfoProps> = ({ avatarUrl, fullName, additionalText }) => {

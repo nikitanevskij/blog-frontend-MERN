@@ -13,7 +13,27 @@ import { Link } from "react-router-dom";
 import { fetchRemovePost } from "../../redux/slices/postsSlice";
 import { useAppDispatch } from "../../redux/store";
 
-export const Post = ({
+type TUserDate = {
+  avatarUrl?: string;
+  fullName?: string;
+};
+
+type TPostProps = {
+  id: number;
+  title?: string;
+  createdAt?: string;
+  imageUrl?: string;
+  user?: TUserDate;
+  viewsCount?: string;
+  commentsCount?: number;
+  tags?: string;
+  children?: React.ReactNode;
+  isFullPost?: boolean;
+  isLoading?: boolean;
+  isEditable?: boolean;
+};
+
+export const Post: React.FC<TPostProps> = ({
   id,
   title,
   createdAt,
@@ -21,11 +41,11 @@ export const Post = ({
   user,
   viewsCount,
   commentsCount,
-  tags,
+  tags = "",
   children,
-  isFullPost,
-  isLoading,
-  isEditable,
+  isFullPost = false,
+  isLoading = false,
+  isEditable = false,
 }) => {
   const dispatch = useAppDispatch();
   if (isLoading) {

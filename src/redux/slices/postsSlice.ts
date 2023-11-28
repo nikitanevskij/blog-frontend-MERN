@@ -1,32 +1,71 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "../../axios";
+import { TFetchUser } from "./authSlice";
 
-export const fetchPosts = createAsyncThunk("posts/fetchPosts", async (sort = "sort_new") => {
-  const { data } = await axios.post(`/posts`, { sort });
+type TSortPosts = "sort_new" | "sort_count";
+type TDeletePost = {
+  success: boolean | string;
+};
+
+export interface IPost {
+  _id: string;
+  title: string;
+  text: string;
+  tags: string;
+  viewsCount: number;
+  user: TFetchUser;
+  imageUrl: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
+interface IPostSliceState {
+  posts: {
+    items: [] | IPost[];
+    status: "loading" | "loaded";
+  };
+  tags: {
+    items: [] | String[];
+    status: "loading" | "loaded";
+  };
+  post: {
+    item: {};
+    status: "loading" | "loaded";
+  };
+}
+export const fetchPosts = createAsyncThunk<IPost[], TSortPosts>(
+  "posts/fetchPosts",
+  async (sort = "sort_new") => {
+    const { data } = await axios.post<IPost[]>(`/posts`, { sort });
+    return data;
+  },
+);
+
+export const fetchTags = createAsyncThunk<String[]>("posts/fetchTags", async () => {
+  const { data } = await axios.get<String[]>("/tags");
   return data;
 });
-export const fetchTags = createAsyncThunk("posts/fetchTags", async () => {
-  const { data } = await axios.get("/tags");
+
+export const fetchFilterbyTags = createAsyncThunk<IPost[], string>("posts/tags", async (tag) => {
+  const { data } = await axios.post<IPost[]>("/posts/tags", { filterTag: tag });
   return data;
 });
 
-export const fetchFilterbyTags = createAsyncThunk("posts/tags", async (tag) => {
-  console.log(tag);
-  const { data } = await axios.post("/posts/tags", { filterTag: tag });
+export const fetchOnePost = createAsyncThunk<IPost, string>("posts/fetchOnePost", async (id) => {
+  const { data } = await axios.get<IPost>(`/posts/${id}`);
   return data;
 });
 
-export const fetchOnePost = createAsyncThunk("posts/fetchOnePost", async (id) => {
-  const { data } = await axios.get(`/posts/${id}`);
-  return data;
-});
+export const fetchRemovePost = createAsyncThunk<TDeletePost, number>(
+  "posts/fetchRemovePost",
+  async (id) => {
+    const { data } = await axios.delete<TDeletePost>(`/posts/${id}`);
+    return data;
+  },
+);
 
-export const fetchRemovePost = createAsyncThunk("posts/fetchRemovePost", async (id) => {
-  const { data } = await axios.delete(`/posts/${id}`);
-  return data;
-});
-
-const initialState = {
+const initialState: IPostSliceState = {
   posts: {
     items: [],
     status: "loading",
@@ -90,9 +129,9 @@ const postsSlice = createSlice({
       //@ts-ignore
       state.posts.items = state.posts.items.filter((obj) => obj._id !== action.meta.arg);
     });
-    //ONE POST
+    //FILTER BY TAG
     builder.addCase(fetchFilterbyTags.pending, (state) => {
-      state.posts.items = {};
+      state.posts.items = [];
       state.posts.status = "loading";
     });
     builder.addCase(fetchFilterbyTags.fulfilled, (state, action) => {
@@ -100,7 +139,7 @@ const postsSlice = createSlice({
       state.posts.status = "loaded";
     });
     builder.addCase(fetchFilterbyTags.rejected, (state) => {
-      state.posts.items = {};
+      state.posts.items = [];
       state.posts.status = "loading";
     });
   },

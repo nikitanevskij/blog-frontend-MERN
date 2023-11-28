@@ -15,7 +15,6 @@ import { useSelector } from "react-redux";
 export const CommentsBlock = ({ items, children, isLoading = true }) => {
   const [deleteComment] = useDeleteCommentMutation();
   const userData = useSelector((state) => state.user.data);
-  console.log(userData?._id);
   const deleteById = async (id) => {
     deleteComment(id);
   };
