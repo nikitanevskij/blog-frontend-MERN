@@ -11,11 +11,23 @@ import Skeleton from "@mui/material/Skeleton";
 import Button from "@mui/material/Button";
 import { useDeleteCommentMutation } from "../redux/commentsApi";
 import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
+import { IComment } from "../redux/slices/commentsSlice";
 
-export const CommentsBlock = ({ items, children, isLoading = true }) => {
+type TCommentBlockProps = {
+  items: IComment[];
+  children?: React.ReactNode;
+  isLoading: boolean;
+};
+
+export const CommentsBlock: React.FC<TCommentBlockProps> = ({
+  items,
+  children,
+  isLoading = true,
+}) => {
   const [deleteComment] = useDeleteCommentMutation();
-  const userData = useSelector((state) => state.user.data);
-  const deleteById = async (id) => {
+  const userData = useSelector((state: RootState) => state.user.data);
+  const deleteById = async (id: number) => {
     deleteComment(id);
   };
   return (

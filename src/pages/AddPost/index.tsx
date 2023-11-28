@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ChangeEvent } from "react";
 import TextField from "@mui/material/TextField";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
@@ -11,11 +11,11 @@ import { useSelector } from "react-redux";
 import { isAuthSelect } from "../../redux/slices/authSlice";
 import axios from "../../axios";
 
-export const AddPost = () => {
+export const AddPost: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const isAuth = useSelector(isAuthSelect);
-  const inputFileRef = React.useRef(null);
+  const inputFileRef = React.useRef<HTMLInputElement>(null);
   const [imageUrl, setImageUrl] = React.useState("");
   const [title, setTitle] = React.useState("");
   const [text, setText] = React.useState("");
@@ -32,13 +32,13 @@ export const AddPost = () => {
     }
   }, []);
 
-  const handleChangeFile = async (e) => {
+  const handleChangeFile = async (e: ChangeEvent<HTMLInputElement>) => {
     try {
+      if (!e.target.files) return;
       const formData = new FormData(); //создаем для загрузки картинки
       const file = e.target.files[0];
       formData.append("image", file);
       const { data } = await axios.post("/upload", formData);
-
       setImageUrl(data.url);
     } catch (error) {
       console.warn(error);
@@ -50,7 +50,7 @@ export const AddPost = () => {
     setImageUrl("");
   };
 
-  const onChange = React.useCallback((value) => {
+  const onChange = React.useCallback((value: string) => {
     setText(value);
   }, []);
 
@@ -90,12 +90,18 @@ export const AddPost = () => {
       alert("Не удалось создать статью");
     }
   };
+
+  const onClickButtonDownload = () => {
+    if (inputFileRef?.current !== null) {
+      inputFileRef.current.click();
+    }
+  };
   if (!isAuth) {
     return <Navigate to="/" />;
   }
   return (
     <Paper style={{ padding: 30 }}>
-      <Button onClick={() => inputFileRef.current.click()} variant="outlined" size="large">
+      <Button onClick={onClickButtonDownload} variant="outlined" size="large">
         Загрузить превью
       </Button>
       <input ref={inputFileRef} type="file" onChange={handleChangeFile} hidden />
@@ -126,6 +132,8 @@ export const AddPost = () => {
         placeholder="Тэги"
         fullWidth
       />
+
+      {/* @ts-ignore */}
       <SimpleMDE className={styles.editor} value={text} onChange={onChange} options={options} />
       <div className={styles.buttons}>
         <Button size="large" variant="contained" onClick={onSubmit}>

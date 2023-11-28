@@ -10,29 +10,29 @@ import { CommentsBlock } from "../components/CommentsBlock";
 import { useSelector } from "react-redux";
 import { fetchPosts, fetchTags } from "../redux/slices/postsSlice";
 import { fetchComments } from "../redux/slices/commentsSlice";
-import { useAppDispatch } from "../redux/store";
+import { RootState, useAppDispatch } from "../redux/store";
 
-export const Home = () => {
+export const Home: React.FC = () => {
   const dispatch = useAppDispatch();
-  const userData = useSelector((state) => state.user.data);
-  const { comments } = useSelector((state) => state.comments);
+  const userData = useSelector((state: RootState) => state.user.data);
+  const { comments } = useSelector((state: RootState) => state.comments);
   const [sortValue, setSortValue] = React.useState(0);
-  const { posts, tags } = useSelector((state) => state.posts);
+  const { posts, tags } = useSelector((state: RootState) => state.posts);
 
   const isPostsLoading = posts.status === "loading";
   const isTagsLoading = tags.status === "loading";
   const isCommentsLoading = comments.status === "loading";
 
   React.useEffect(() => {
-    dispatch(fetchPosts());
+    dispatch(fetchPosts("sort_new"));
     dispatch(fetchTags());
     dispatch(fetchComments());
   }, []);
 
-  const handleChange = (event, newValue) => {
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setSortValue(newValue);
     if (newValue === 0) {
-      dispatch(fetchPosts());
+      dispatch(fetchPosts("sort_new"));
       return;
     }
     dispatch(fetchPosts("sort_count"));

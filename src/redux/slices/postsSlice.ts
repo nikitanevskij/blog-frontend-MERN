@@ -36,7 +36,7 @@ interface IPostSliceState {
 }
 export const fetchPosts = createAsyncThunk<IPost[], TSortPosts>(
   "posts/fetchPosts",
-  async (sort = "sort_new") => {
+  async (sort) => {
     const { data } = await axios.post<IPost[]>(`/posts`, { sort });
     return data;
   },

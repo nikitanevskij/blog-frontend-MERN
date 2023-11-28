@@ -1,17 +1,38 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "../../axios";
+import { TFetchUser } from "./authSlice";
 
-export const fetchComments = createAsyncThunk("comments/fetchComments", async () => {
-  const { data } = await axios.get(`/comments`);
+export interface IComment {
+  _id: string;
+  text: string;
+  user: TFetchUser;
+  post: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
+interface ICommentsSliceState {
+  comments: {
+    items: IComment[];
+    status: "loading" | "loaded";
+  };
+}
+
+export const fetchComments = createAsyncThunk<IComment[]>("comments/fetchComments", async () => {
+  const { data } = await axios.get<IComment[]>(`/comments`);
   return data;
 });
 
-export const fetchCommentsById = createAsyncThunk("comments/fetchCommentsById", async (id) => {
-  const { data } = await axios.get(`/comments/${id}`);
-  return data;
-});
+export const fetchCommentsById = createAsyncThunk<IComment[], string>(
+  "comments/fetchCommentsById",
+  async (id) => {
+    const { data } = await axios.get<IComment[]>(`/comments/${id}`);
+    return data;
+  },
+);
 
-const initialState = {
+const initialState: ICommentsSliceState = {
   comments: {
     items: [],
     status: "loading",
